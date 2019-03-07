@@ -78,9 +78,10 @@
         <table class="table table-hover">
            <thead>
                 <th>Name</th>
-                <th>User</th>
+                <th>Details</th>
                 <th>Created</th>
                 <th>Progress</th>
+                <th>Actions</th>
            </thead>
             <tbody>
 
@@ -99,12 +100,27 @@ aria-hidden="true">
         <span aria-hidden="true">&times;</span>
       </button>
     </div>
-    <div class="modal-body">
-      ...
+    <div class="modal-body"> <!--Form to add a new Project-->
+      <div class="container">
+        <div class="row">
+          <div class="col-md-5">
+            <div class="md-form" style="width:300px;">
+              <input type="text" id="txtProjectName" class="form-control">
+              <label for="txtProjectName">Project Name</label>
+            </div>
+            <label class="text-danger" id="pJnameError"></label>
+            <div class="md-form" style="width:300px;">
+              <input type="text" id="txtDetails" class="form-control">
+              <label for="txtDetails">Details</label>
+            </div>
+            <label class="text-danger" id="pJdetailsError"></label>
+          </div>
+        </div>
+      </div>
     </div>
     <div class="modal-footer">
       <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-      <button type="button" class="btn btn-primary">Save changes</button>
+      <button type="button" class="btn btn-primary" id="btnSaveProject">SAVE PROJECT</button>
     </div>
   </div>
 </div>
