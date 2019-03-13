@@ -16,11 +16,20 @@ $(document).ready(function(){ //Initial Config
      //DataBase reference:
      database= firebase.database();
 
-     document.getElementById("btnSaveProject").onclick= SaveProject;
+     document.getElementById("btnSaveProject").onclick= SaveNewProject;
 })
 
-function SaveProject(){
+//#region Projects Functions
+//Save a new project:
+function SaveNewProject(){  
 
-    //Save a new project:
+    //Get the inputs references
+    var name= document.getElementById("txtProjectName");
+    var Details= document.getAnimations("txtDetails");
+
     
 }
+function Get_ProjectList(){
+
+}
+//#endregion
