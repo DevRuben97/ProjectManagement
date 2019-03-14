@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Project Management</title>
+      <!--Styles-->
+      <link rel="stylesheet" href="css/bootstrap.min.css">
+      <link rel="stylesheet" href="css/mdb.min.css">
+      <!--Custom css-->
+      <link rel="stylesheet" href="css/site.css"> 
+</head>
+<body>
+  
+  <nav class="navbar navbar-dark primary-color">
+      <a class="navbar-brand" href="#">Project Management: Client page</a>
+  </nav>
+  <!--Content page-->
+  <br>
+ <div class="container">
+    <div class="jumbotron">
+        <h2 class="h1-responsive">Bienvenido</h2>
+        <p class="lead">Esta es la pagina de inicio del administrador de projectos. 
+          Con el podras crear projectos, visualizar su progreso, crear tareas para dichos projectos.
+        </p>
+        <hr class="my-2">
+        <p>Para poder acceder a las funciones de esta herramienta es necesario que crees una cuenta. Si ya la 
+          tienes, inicia sesión.
+        </p>
+        <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#UserModal">Crear usuario</button>
+        <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#UserModal">Iniciar Sesión</button><br>
+    </div>
+ </div>
+
+
+ <!--Modal Login user-->
+ <div class="modal fade" id="UserModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+aria-hidden="true">
+<div class="modal-dialog modal-dialog-centered" role="document">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h5 class="modal-title" id="exampleModalLabel">Iniciar Sesión</h5>
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body"> <!--Form to add a new Project-->
+      <div class="container">
+        <div class="row">
+          <div class="col-md-5">
+            <div class="md-form" style="width:300px;">
+              <input type="text" id="txtCorreo" class="form-control">
+              <label for="txtProjectName">Correo: </label>
+            </div>
+            <label class="text-danger" id="pJnameError"></label>
+            <div class="md-form" style="width:300px;">
+              <input type="password" id="txtContraseña" class="form-control">
+              <label for="txtDetails">Contraseña: </label>
+            </div>
+            <label class="text-danger" id="pJdetailsError"></label>
+            <div class="md-form" style="width:300px;" id="RepeatPassDiv" hidden>
+                <input type="password" id="txtRepeatPassword" class="form-control">
+                <label for="txtRepeatPassword">Repetir Contraseña: </label>
+              </div>
+              <label class="text-danger" id="pJdetailsError"></label>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+      <button type="button" class="btn btn-primary" id="btnSaveProject">Acceder</button>
+    </div>
+  </div>
+</div>
+</div>
+     <!--Scripts-->
+      <!-- JQuery -->
+  <script  src="js/jquery-3.3.1.min.js"></script>
+  <!-- Bootstrap tooltips -->
+  <script  src="js/popper.min.js"></script>
+  <!-- Bootstrap core JavaScript -->
+  <script  src="js/bootstrap.min.js"></script>
+  <!-- MDB core JavaScript -->
+  <script src="js/mdb.min.js"></script>
+
+  <!--font awesome-->
+  <script src="js/icons_all.min.js"></script>
+
+
+  <!--Firebase-API-->
+  <script src="https://www.gstatic.com/firebasejs/5.8.5/firebase.js"></script>
+
+  <!--App Scripts-->
+  <script src="js/app.js"></script>
+</body>
+</html>
