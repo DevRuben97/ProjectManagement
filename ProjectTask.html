@@ -5,8 +5,131 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Project Management: Task</title>
+
+      <!--Styles-->
+      <link rel="stylesheet" href="css/bootstrap.min.css">
+      <link rel="stylesheet" href="css/mdb.min.css">
+      <!--Custom css-->
+      <link rel="stylesheet" href="css/site.css"> 
 </head>
 <body>
-    
+    <!--Navbar -->
+<nav class="mb-1 navbar navbar-expand-lg navbar-dark info-color">
+    <a class="navbar-brand" href="#">Project Manager</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent-333"
+      aria-controls="navbarSupportedContent-333" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent-333">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="#">Project List
+            <span class="sr-only">(current)</span>
+          </a>
+        </li>
+        <li class="nav-item active">
+          <a class="nav-link" href="#">Task Manager</a>
+        </li>
+        <li class="nav-item">
+          <a href="#" class="nav-link">Dev. Information</a>
+        </li>
+      </ul>
+      <ul class="navbar-nav ml-auto nav-flex-icons">
+        <li class="nav-item">
+          <a class="nav-link waves-effect waves-light" href="mailto:alexbatista158@hotmail.com">
+            <i class="fas fa-envelope"></i>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link waves-effect waves-light" href="https://github.com/DevRuben97">
+            <i class="fab fa-github"></i>
+          </a>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink-333" data-toggle="dropdown" aria-haspopup="true"
+            aria-expanded="false">
+            <label><i class="fas fa-user"></i> alexbatista158@hotmail.com</label>
+          </a>
+          <div class="dropdown-menu dropdown-menu-right dropdown-default" aria-labelledby="navbarDropdownMenuLink-333">
+            <a class="dropdown-item" href="#"><i class="fas fa-cog"></i> Administrar Usuario</a>
+            <a class="dropdown-item" href="#"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</a>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </nav>
+  <!--/.Navbar -->
+  <!--Content-->
+<div class="container">
+    <br>
+    <h2 class="text-primary">Project Task</h2>
+    <button class="btn btn-primary" onclick="AddTask()" data-toggle="modal" data-target="#AddTask"><i class="fas fa-plus"></i> Add task</button><br>
+    <label >List of task for the project: <strobg id="ProjectName"></strong></label>
+        
+        <div class="card-columns" id="Card-List"> <!--List of Task-->
+           
+          </div>
+</div>
+
+ <!-- Modal -->
+ <div class="modal fade" id="AddTask" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+ aria-hidden="true">
+ <div class="modal-dialog modal-dialog-centered" role="document">
+   <div class="modal-content">
+     <div class="modal-header">
+       <h5 class="modal-title" id="exampleModalLabel">ADD NEW TASK FOR THE PROJECT</h5>
+       <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+         <span aria-hidden="true">&times;</span>
+       </button>
+     </div>
+     <div class="modal-body"> <!--Form to add a new Project-->
+       <div class="container">
+         <div class="row">
+           <div class="col-md-5">
+             <div class="md-form" style="width:300px;">
+               <input type="text" id="txtTaskName" class="form-control">
+               <label for="txtTaskName">Task Name</label>
+             </div>
+             <label class="text-danger" id="pJnameError"></label>
+             <div class="md-form" style="width:300px;">
+               <input type="text" id="txtDetails" class="form-control">
+               <label for="txtDetails">Details</label>
+             </div>
+             <label class="text-danger" id="pJdetailsError"></label>
+           </div>
+         </div>
+       </div>
+     </div>
+     <div class="modal-footer">
+       <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+       <button type="button" class="btn btn-primary" id="btnSaveTask">SAVE TASK</button>
+     </div>
+   </div>
+ </div>
+ </div>
+
+
+      <!--Scripts-->
+      <!-- JQuery -->
+  <script  src="js/jquery-3.3.1.min.js"></script>
+
+  <!--Jquery Validate-->
+  <script src="js/Jquery_Validate.js"></script>
+  <!-- Bootstrap tooltips -->
+  <script  src="js/popper.min.js"></script>
+  <!-- Bootstrap core JavaScript -->
+  <script  src="js/bootstrap.min.js"></script>
+  <!-- MDB core JavaScript -->
+  <script src="js/mdb.min.js"></script>
+
+  <!--font awesome-->
+  <script src="js/icons_all.min.js"></script>
+
+
+  <!--Firebase-API-->
+  <script src="https://www.gstatic.com/firebasejs/5.8.5/firebase.js"></script>
+
+  <!--App Scripts-->
+  <script src="js/app.js"></script>
 </body>
 </html>
