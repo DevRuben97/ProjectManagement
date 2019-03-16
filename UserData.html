@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Admin Page: Project Management</title>
+    <title>Project Management: Admin User</title>
     <!--Styles-->
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/mdb.min.css">
@@ -21,9 +21,8 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent-333">
           <ul class="navbar-nav mr-auto">
-            <li class="nav-item active">
+            <li class="nav-item">
               <a class="nav-link" href="AdminPanel.html">Project List
-                <span class="sr-only">(current)</span>
               </a>
             </li>
             <li class="nav-item">
@@ -50,7 +49,7 @@
                 <label><i class="fas fa-user"></i> <strong id="LoginUser"></strong></label>
               </a>
               <div class="dropdown-menu dropdown-menu-right dropdown-default" aria-labelledby="navbarDropdownMenuLink-333">
-                <a class="dropdown-item" href="UserData.html"><i class="fas fa-cog"></i> Administrar Usuario</a>
+                <a class="dropdown-item" href="Home.html"><i class="fas fa-cog"></i> Administrar Usuario</a>
                 <a class="dropdown-item" href="#" onclick="LoginOut()"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</a>
               </div>
             </li>
@@ -60,60 +59,22 @@
       <!--/.Navbar -->
       <!--Contenet-->
     <div class="container">
-        <br>
-        <h2 class="text-center">Projects List</h2>
-        <button class="btn btn-primary" data-toggle="modal" data-target="#AddProjectMd"><i class="fas fa-plus"></i> Add new project</button>
-        <br>
-        <table class="table table-hover">
-           <thead>
-                <th>Name</th>
-                <th>Details</th>
-                <th>Created</th>
-                <th>Progress</th>
-                <th>Actions</th>
-           </thead>
-            <tbody>
-              
-            </tbody>
-        </table>
+    <br>
+    <div class="card">
+    <div class="card-header">
+            <h2 class="text-center">User Data</h2>
+    </div>
+    <label>Email: <strong id="UserEmail"></strong></label><br>
+    <label>Password: <strong id="UserPassword"></strong></label><br>
+    <div class="card-footer">
+    <button class="btn btn-primary" style="width:20%">Change password</button>
+    <button class="btn btn-secondary" style="width:20%">Edit User</button>
     </div>
 
-    <!-- Modal -->
-<div class="modal fade" id="AddProjectMd" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-aria-hidden="true">
-<div class="modal-dialog modal-dialog-centered" role="document">
-  <div class="modal-content">
-    <div class="modal-header">
-      <h5 class="modal-title" id="exampleModalLabel">ADD NEW PROJECT</h5>
-      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-      </button>
     </div>
-    <div class="modal-body"> <!--Form to add a new Project-->
-      <div class="container">
-        <div class="row">
-          <div class="col-md-5">
-            <div class="md-form" style="width:300px;">
-              <input type="text" id="txtProjectName" class="form-control">
-              <label for="txtProjectName">Project Name</label>
-            </div>
-            <label class="text-danger" id="pJnameError"></label>
-            <div class="md-form" style="width:300px;">
-              <input type="text" id="txtDetails" class="form-control">
-              <label for="txtDetails">Details</label>
-            </div>
-            <label class="text-danger" id="pJdetailsError"></label>
-          </div>
-        </div>
-      </div>
+
     </div>
-    <div class="modal-footer">
-      <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-      <button type="button" class="btn btn-primary" id="btnSaveProject">SAVE PROJECT</button>
-    </div>
-  </div>
-</div>
-</div>
+      
     <!--Scripts-->
       <!-- JQuery -->
   <script  src="js/jquery-3.3.1.min.js"></script>
