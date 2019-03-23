@@ -24,12 +24,14 @@ $(document).ready(function(){ //Initial Config
      if (ruta.endsWith("/AdminPanel.html")){
         document.getElementById("btnSaveProject").onclick= SaveNewProject;
         VerifyIdentity();
+        Get_ProjectList();
      }
      else if (ruta.endsWith("/Home.html")){
          document.getElementById("")
      }
      else if (ruta.endsWith("/ProjectTask.html")){
          VerifyIdentity();
+         TaskList();
 
      }
      
@@ -66,7 +68,8 @@ function EditProject(){
 
 }
 function Get_ProjectList(){
-
+//Project list of the user:
+  
 }
 //#endregion
 
@@ -74,39 +77,48 @@ function Get_ProjectList(){
 function AddUser(){
 
     $("#RepeatPassDiv").attr("hidden",false);
+    $("#ModalTitle").text("REGISTRAR NUEVO USUARIO");
     var Savebutton= $("#btnSaveProject");
     Savebutton.off("click");
-    Savebutton.on("click",function(){
+    Savebutton.text("REGISTRAR USUARIO");
+    Savebutton.on("click",function(e){
 
         //Save the new user:
         var email= $("#txtCorreo");
         var password= $("#txtContraseña");
         var RepPassword= $("#txtRepeatPassword");
         //Validate the data:
-        var data= [email, password, RepPassword]
+        var data= [email, password, RepPassword];
 
         if (Validate(data)){
             //Validate Equal Message
-            if (password!= RepPassword){
-                SetError(password, "Las contraseñas no son iguales")
+            if (password.val()!= RepPassword.val()){
+                SetError(RepPassword, "Las contraseñas no son iguales")
+                e.preventDefault();
 
             }
-            else if (password<9){
+            else if (Number(password.val())<9){
                 SetError(password, "La contraseña tiene que tener minimo 9 caracteres")
+                e.preventDefault();
             }
             else{
                 //save the user 
-                firebase.auth().createUserWithEmailAndPassword(email, password).then(function(){
-
-                  alert("the user was created sucessfully.");
-                  ClearInput(data);
-                }).catch(function(error) {
+                firebase.auth().createUserWithEmailAndPassword(email.val(), password.val())
+                .catch(function(error) {
                     // Handle Errors here.
                     var errorCode = error.code;
                     var errorMessage = error.message;
-                    console.log("A error  was created: "+ errorCode+'-'+errorMessage);
+                    var DataError= "A error  was created: "+ errorCode+'-'+errorMessage;
+                    alert(DataError);
+                    console.log(DataError);
                   });
+                  alert(`El Usuario: ${email.val()} fue creado correcatamen. Proceda a iniciar Sesión`);
+                  ClearInput(data);
+                  e.preventDefault();
             }
+        }
+        else{
+            e.preventDefault();
         }
    
         
@@ -117,9 +129,12 @@ function Login(){
 
     //Login user 
     $("#RepeatPassDiv").attr("hidden",true);
+    $("#ModalTitle").text("Iniciar Sesión");
+    
     var LoginButton= $("#btnSaveProject");
     LoginButton.off("click");
-    LoginButton.on("click",function(){
+    LoginButton.text("ACCEDER")
+    LoginButton.on("click",function(e){
 
         var email= $("#txtCorreo");
         var password= $("#txtContraseña");
@@ -127,34 +142,45 @@ function Login(){
         var array= [email,password]
         if (Validate(array)){
 
-            firebase.auth().signInWithEmailAndPassword(email, password)
-            .then(function(){
-                alert("Welcome: "+ email);
-                window.location.href= "AdminPanel.html";
-            })
+            firebase.auth().signInWithEmailAndPassword(email.val(), password.val())
             .catch(function(error) {
                 var errorCode = error.code;
                 var errorMessage = error.message;
                 console.log("A Error was created: "+ errorCode+"-"+errorMessage);
                 alert("Email or password is bad. Please try one more time");
+                e.preventDefault();
               });
+              //Confirmation Message:
+              alert("Bienvenido: "+ email);
+              window.location.href= "AdminPanel.html";
+        }
+        else{
+            e.preventDefault();
         }
         
     })
 }
 function LoginOut(){
 
+   if(confirm("¿Estas seguro de cerrar la sesión?")){
+
     firebase.auth().signOut().then(function() {
         window.location.href= "Home.html";
       }).catch(function(error) {
+          alert("A error was created on the loginOut function."+ error);
          console.log("A error was created on the loginOut function."+ error);
       });
+   }
 }
 function VerifyIdentity(){  //Verificar si ya se inicio la sesion en la herramienta.
     firebase.auth().onAuthStateChanged(function(user) {
         if (user== null){
             alert("Necesitas iniciar Sesión para acceder a las funciones de esta herramienta")
             window.location.href="Home.html";
+        }
+        else{
+            //Set the information: 
+            $("#LoginUser").text(user.email);
         }
       });
 }
@@ -171,17 +197,19 @@ var deleteTask= function(){
 var EditTaskName= function(){
 
 }
+var TaskList= function(){
+
+}
 
 
 //#region Common functions
 function Validate(data){
 
   //validate the inpusts:
-  for(e==0;e<data.length;e+=1){
-      var valid= false;
-      if (data[e].val()== "" || data[e].val()== null){
-          $(input).addClass("form-control is-invalid");
-          SetError(input[e], "this fiel is riquired");
+  var valid= false;
+  for(var e=0;e<data.length;e++){     
+      if ($(data[e]).val()== ""){
+          SetError(data[e], "Este campo es requerido");
           valid= false;
           break;
       }
@@ -193,14 +221,20 @@ function Validate(data){
 
 }
 function SetError(input, message){
+    //Show a error message on a input 
     $(input).addClass("form-control is-invalid")
     var parent= $(input).parent();
-    $(parent).children("div[class='valid-feedback']")
+    $(parent).children("div[class='invalid-feedback']")
     .attr("hidden",false).text(message);
 }
 function ClearInput(inputArray){
-    for(e=0;e<inputArray.length;e++){
-        $(input).val("");
+    for(var e=0;e<inputArray.length;e++){
+        $(inputArray[e]).val("");
+
+        //Clear the inputs with error messages:
+        var parent= $(inputArray[e]).parent();
+        $(parent).children("div[class='invalid-feedback']")
+        .attr("hidden",true).text("");
     }
 
 }
