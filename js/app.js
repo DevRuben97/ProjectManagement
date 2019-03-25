@@ -34,6 +34,10 @@ $(document).ready(function(){ //Initial Config
          TaskList();
 
      }
+     else if (ruta.endsWith("/UserData.html")){
+         VerifyIdentity();
+         Get_UserData();
+     }
      
 
      
@@ -77,6 +81,7 @@ function Get_ProjectList(){
 function AddUser(){
 
     $("#RepeatPassDiv").attr("hidden",false);
+    $("#ForgotPassword").attr("hidden",true);
     $("#ModalTitle").text("REGISTRAR NUEVO USUARIO");
     var Savebutton= $("#btnSaveProject");
     Savebutton.off("click");
@@ -129,11 +134,12 @@ function Login(){
 
     //Login user 
     $("#RepeatPassDiv").attr("hidden",true);
+    $("#ForgotPassword").attr("hidden",false);
     $("#ModalTitle").text("Iniciar Sesión");
     
     var LoginButton= $("#btnSaveProject");
     LoginButton.off("click");
-    LoginButton.text("ACCEDER")
+    LoginButton.text("ACCEDER");
     LoginButton.on("click",function(e){
 
         var email= $("#txtCorreo");
@@ -142,17 +148,18 @@ function Login(){
         var array= [email,password]
         if (Validate(array)){
 
-            firebase.auth().signInWithEmailAndPassword(email.val(), password.val())
-            .catch(function(error) {
+            firebase.auth().signInWithEmailAndPassword(email.val(), password.val()).catch(function(error) {
+               
                 var errorCode = error.code;
                 var errorMessage = error.message;
                 console.log("A Error was created: "+ errorCode+"-"+errorMessage);
-                alert("Email or password is bad. Please try one more time");
+                alert("El Correo o la contraseña estan mal. Trate una vez mas");
                 e.preventDefault();
               });
               //Confirmation Message:
-              alert("Bienvenido: "+ email);
-              window.location.href= "AdminPanel.html";
+              alert(`Bienvenido: ${email.val()}`);
+              e.preventDefault();
+              
         }
         else{
             e.preventDefault();
@@ -167,8 +174,8 @@ function LoginOut(){
     firebase.auth().signOut().then(function() {
         window.location.href= "Home.html";
       }).catch(function(error) {
-          alert("A error was created on the loginOut function."+ error);
-         console.log("A error was created on the loginOut function."+ error);
+          alert("ha ocurrido un error al realizar el proceso"+ error);
+         console.log(error);
       });
    }
 }
@@ -183,6 +190,85 @@ function VerifyIdentity(){  //Verificar si ya se inicio la sesion en la herramie
             $("#LoginUser").text(user.email);
         }
       });
+}
+function Get_UserData(){
+
+    //Get the current user:
+    firebase.auth().onAuthStateChanged(function(user){
+        if (user!= null){
+    //References of data:
+    $("#UserID").val(user.uid);
+    $("#UserEmail").val(user.email);
+        }
+    })
+
+}
+function ChangePassword(){
+    //Change the password of the current user:
+    if (confirm("¿Estas seguro de cambiar la contraseña?")){
+        
+       var uid= $("#UserID").val();
+       var email= $("#UserEmail").val();
+
+       if (uid==null || uid== ""){
+        var email= prompt("Indique su correo electronico");
+
+        if (email!= null){
+            //Enviar un correo electronico para cambiar la contraseña:
+            firebase.auth().sendPasswordResetEmail(email).then(function(){
+                alert(`Un mensaje de restablecimiento de contraseña fue enviado a: ${email}. Verifiquelo`);
+                finish= true;
+                continue;
+            }).catch(function(error){
+                alert("A ocurrido un error inesperado");
+                finish= true;
+                continue;
+                console.log(error);
+            })
+        }
+    }
+    else{
+        var password;
+        var rePassword;
+        var feild= false;
+
+        password= prompt("Indique la contraseña nueva");
+        if (password!= null){
+
+            rePassword= prompt("Repita la contraseña");
+
+            if (password.length<9){
+                alert("La Longitud de la contraseña debe der ser igual o mayor a 9.");
+                feild= true;
+            }
+            else if (password!= rePassword){
+                alert("Las contraseñas no coiciden");
+                feild= true;
+            }
+            else{
+                firebase.auth().onAuthStateChanged(function(user){
+    
+                    user.updatePassword(password).then(function(){
+                        alert("La Contraseña fue actualizada correctamente");
+                    }).then(function(error){
+                        alert("A Ocurrido un error al realizar el proceso de cambio.");
+                        console.log(error);
+                    })
+                })
+            }
+        }
+        else{
+            alert("Debe de indicar una contraseña valida");
+            feild= true;
+        }
+
+        if (feild){
+            //Volver a ejecutar la funcion en caso de alla error en el proceso.
+            ChangePassword(); 
+        }
+    }
+
+    }
 }
 
 //#endregion

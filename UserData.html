@@ -62,13 +62,23 @@
     <br>
     <div class="card">
     <div class="card-header">
-            <h2 class="text-center">User Data</h2>
+            <h2 class="text-center"><i class="fas fa-user"></i> Datos del Usuario</h2>
     </div>
-    <label>Email: <strong id="UserEmail"></strong></label><br>
-    <label>Password: <strong id="UserPassword"></strong></label><br>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-5">
+          <label>User ID:</label>
+          <input type="text" class="form-control" id="UserID" style="background-color: white; border-color: 0x33B5E5"  readonly>
+          <label>Email:</label><br>
+          <input type="text" class="form-control" id="UserEmail" style="background-color: white; border-color: 0x33B5E5" readonly>
+          <br>
+          <br>
+        </div>
+      </div>
+    </div>
     <div class="card-footer">
-    <button class="btn btn-primary" style="width:20%">Change password</button>
-    <button class="btn btn-secondary" style="width:20%">Edit User</button>
+    <button class="btn btn-primary" style="width:20%" onclick="ChangePassword()">ACTUALIZAR CLAVE</button>
+    <button class="btn btn-secondary" style="width:20%" onclick="LoginOut()">CERRAR CESIÓN</button>
     </div>
 
     </div>
