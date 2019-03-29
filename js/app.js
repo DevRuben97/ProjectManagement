@@ -148,16 +148,23 @@ function Login(){
         var array= [email,password]
         if (Validate(array)){
 
-            firebase.auth().signInWithEmailAndPassword(email.val(), password.val()).catch(function(error) {
+            firebase.auth().signInWithEmailAndPassword(email.val(), password.val()).then(function(){
+                 //Confirmation Message:
+                alert(`Bienvenido: ${email.val()}`);
+                window.location.href= "AdminPanel.html"
+            }).catch(function(error) {
                
                 var errorCode = error.code;
                 var errorMessage = error.message;
-                console.log("A Error was created: "+ errorCode+"-"+errorMessage);
-                alert("El Correo o la contraseña estan mal. Trate una vez mas");
+                if (errorCode.includes("auth/wrong")){
+                    alert("El Correo o la contraseña estan mal. Trate una vez mas");
+                }
+                else{
+                    console.log("A Error was created: "+ errorCode+"-"+errorMessage);
+                    alert(errorMessage);
+                }       
                 e.preventDefault();
-              });
-              //Confirmation Message:
-              alert(`Bienvenido: ${email.val()}`);
+              });          
               e.preventDefault();
               
         }
@@ -190,6 +197,7 @@ function VerifyIdentity(){  //Verificar si ya se inicio la sesion en la herramie
             $("#LoginUser").text(user.email);
         }
       });
+
 }
 function Get_UserData(){
 
@@ -217,12 +225,8 @@ function ChangePassword(){
             //Enviar un correo electronico para cambiar la contraseña:
             firebase.auth().sendPasswordResetEmail(email).then(function(){
                 alert(`Un mensaje de restablecimiento de contraseña fue enviado a: ${email}. Verifiquelo`);
-                finish= true;
-                continue;
             }).catch(function(error){
                 alert("A ocurrido un error inesperado");
-                finish= true;
-                continue;
                 console.log(error);
             })
         }
