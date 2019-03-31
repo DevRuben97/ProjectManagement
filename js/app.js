@@ -151,7 +151,7 @@ function Login(){
             firebase.auth().signInWithEmailAndPassword(email.val(), password.val()).then(function(){
                  //Confirmation Message:
                 alert(`Bienvenido: ${email.val()}`);
-                window.location.href= "AdminPanel.html"
+                window.location.href= "Admin/AdminPanel.html"
             }).catch(function(error) {
                
                 var errorCode = error.code;
@@ -179,7 +179,7 @@ function LoginOut(){
    if(confirm("¿Estas seguro de cerrar la sesión?")){
 
     firebase.auth().signOut().then(function() {
-        window.location.href= "Home.html";
+        window.location.href= "../Home.html";
       }).catch(function(error) {
           alert("ha ocurrido un error al realizar el proceso"+ error);
          console.log(error);
@@ -190,7 +190,7 @@ function VerifyIdentity(){  //Verificar si ya se inicio la sesion en la herramie
     firebase.auth().onAuthStateChanged(function(user) {
         if (user== null){
             alert("Necesitas iniciar Sesión para acceder a las funciones de esta herramienta")
-            window.location.href="Home.html";
+            window.location.href="../Home.html";
         }
         else{
             //Set the information: 
@@ -291,6 +291,23 @@ var TaskList= function(){
 
 }
 
+//#region Home client functions:
+
+function MensajeDContacto(){
+    
+    var nombre= $("#txtNombreCt");
+    var email= $("#txtCorreoCt");
+    var asunto= $("#txtAsuntoCt");
+    var mensaje= $("#txtMensajeCt");
+
+    var inputs= [nombre,email,asunto,mensaje];
+
+    if (Validate(inputs)){
+        
+        alert(`Un mensaje a la dirección: ${email.val()}, fue enviado al nombre de: ${nombre.val()}`);
+        ClearInput(inputs);
+    }
+}
 
 //#region Common functions
 function Validate(data){
