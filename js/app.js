@@ -7,7 +7,7 @@ const config= {
     storageBucket: "projectmanager-bac26.appspot.com",
     messagingSenderId: "755466272035"
 };
-var database;
+var database; //database access
 var btnNewButton;
 var btnCloseButton;
 //Global variables:
@@ -15,14 +15,13 @@ $(document).ready(function(){ //Initial Config
 
      // Initialize Firebase
      firebase.initializeApp(config);
-     //DataBase reference:
-     database= firebase.database();
 
+     database= firebase.firestore();//database reference
 
      //Determinar el tipo de configuracion:
      var ruta= window.location.href;
      if (ruta.endsWith("/AdminPanel.html")){
-        document.getElementById("btnSaveProject").onclick= SaveNewProject;
+        $("#btnSaveProject").click(SaveNewProject);
         VerifyIdentity();
         Get_ProjectList();
      }
@@ -48,32 +47,126 @@ $(document).ready(function(){ //Initial Config
 //Save a new project:
 function SaveNewProject(){  
 
-    //Get the inputs references
-    var name= $("txtProjectName");
-    var Details= $("txtDetails");
+    var btn= $("#btnSaveProject");
+    $("#ModalTitle").text('ADD NEW PROJECT');
+    btn.off('click');
+    btn.on('click',(event)=>{
+        //Get the inputs references
+    var name= $("#txtProjectName");
+    var Details= $("#txtDetails");
 
-    var inputs= [name,details];
+    var inputs= [name,Details];
 
     if (Validate(inputs)){
         //create the object for sent to firebase database
         var date= new Date();
-        var ajaxobj= {
-            name: name,
-            Details: Details,
-            Created: date.getDay()+ '/'+date.getMonth()+'/'+date.getFullYear(),
-            Progress: 0.0
+        //Get the current user:
+        var user= $("#LoginUser").val();
+        var Project= {
+            name: name.val(),
+            Details: Details.val(),
+            Created: date.getDate()+ '/'+date.getMonth()+'/'+date.getFullYear(),
+            Progress: 0.0,
+            UserName: user
         };
-
+        //save data to the database:
+        database.collection('Project').add(Project).then(function(){
+            //success message
+            alert(`El Proyecto: ${name.val()} fue guardado correctamente`);
+            ClearInput(inputs);
+            Get_ProjectList(); //Update the projects list:
+        }).catch(function(error){
+            alert("A Ocurrido un error al ingresar los datos");
+            console.log(error);
+        })
     }
+    })
 
     
 }
-function EditProject(){
+function EditProject(ProjectID,name,Details){
+//Edit the selected project
 
+//Get the inputs references
+var txtname= $("#txtProjectName");
+var txtDetails= $("#txtDetails");
+var btn= $("#btnSaveProject");
+$("#ModalTitle").text('EDIT THIS PROJECT');
+//Set the values to show to the user:
+txtname.val(name);
+txtDetails.val(Details);
+
+btn.off('click');
+btn.on('click',(event)=>{
+    var inputs= [name,Details];
+
+    if (Validate(inputs)){
+        //create the object for sent to firebase database
+        var Project= { //Update only the nane and details of the project.
+            name: name.val(),
+            Details: Details.val(),
+        };
+        //save data to the database:
+        database.collection('Project').doc(ProjectID).set(Project).then(function(){
+            //success message
+            alert(`El Proyecto: ${name} fue actualizado correctamente`);
+            ClearInput(inputs);
+            Get_ProjectList(); //Update the projects list:
+        }).catch(function(error){
+            alert("A Ocurrido un error al ingresar los datos");
+            console.log(error);
+        })
+    }
+})
+
+}
+function DeleteProject(ProjectID){
+//Delete the selected project 
+if (confirm("¿Estas seguro de eliminar este proyecto?")){
+
+    database.collection('Project').doc(ProjectID).delete()
+    .then(function(){
+        alert("El Proyecto ha sido eliminado correctamente");
+        Get_ProjectList();
+    }).catch(function(error){
+        alert("Ha Ocurrido un error eliminado el proyecto");
+        console.log(error);
+    })
+}
 }
 function Get_ProjectList(){
 //Project list of the user:
-  
+ var tableRows= $("#ProjectTable tbody");
+ firebase.auth().onAuthStateChanged(function(user){
+     //Get the data:
+    if (user!= null){ //Verify if the user is not null.
+        database.collection("Project").where('UserName','==',user.email).limit(100).get().then((querySnapshot) => {
+            //Clear the rows of the table 
+            if (tableRows.find('tr').length>0){
+                tableRows.html('');
+            }
+            querySnapshot.forEach((doc) => {
+                //Add rows to the table:
+                var data= doc.data();
+                tableRows.append(`<tr>
+                <td>${data.name}</td>
+                <td>${data.Details}</td>
+                <td>${data.Created}</td>
+                <td>${data.Progress}%</td>
+                <td>
+                <button class='btn btn-danger btn-sm' onclick="DeleteProject('${doc.id}')"><i class='fas fa-times-circle'></i></button>
+                <button class='btn btn-secondary btn-sm' onclick="EditProject('${doc.id}','${data.name}','${data.Details}')" 
+                data-toggle="modal" data-target="#AddProjectMd"><i class='fas fa-edit'></i></button>
+                </td>
+                </tr>`)
+            });
+        }).catch((error)=>{
+            console.log(error);
+            alert("A ocurrido un error al cargar los datos");
+        })
+    }
+
+ })
 }
 //#endregion
 
@@ -186,18 +279,18 @@ function LoginOut(){
       });
    }
 }
-function VerifyIdentity(){  //Verificar si ya se inicio la sesion en la herramienta.
+function VerifyIdentity(){ 
+     //Verificar si ya se inicio la sesion en la herramienta.
     firebase.auth().onAuthStateChanged(function(user) {
         if (user== null){
             alert("Necesitas iniciar Sesión para acceder a las funciones de esta herramienta")
             window.location.href="../Home.html";
         }
         else{
-            //Set the information: 
+            //Set the information:
             $("#LoginUser").text(user.email);
         }
       });
-
 }
 function Get_UserData(){
 
