@@ -62,10 +62,20 @@
   <!--Content-->
 <div class="container">
     <br>
-    <h2 class="text-primary">Project Task</h2>
-    <button class="btn btn-primary" onclick="AddTask()" data-toggle="modal" data-target="#AddTask"><i class="fas fa-plus"></i> Add task</button><br>
-    <label >List of task for the project: <strobg id="ProjectName"></strong></label>
-        
+    <h2 class="text-primary text-center">List of Task</h2>
+   <div class="row">
+     <div class="col-md-3">
+      <label >Show task for the project:</label>
+      <select class="browser-default custom-select" id="ListProjectNames">
+        <option disabled selected>Select the project</option>
+      </select>
+     </div>
+     <div class="col-md-3">
+       <br>
+      <button class="btn btn-primary" onclick="AddTask()" data-toggle="modal" data-target="#AddTask"><i class="fas fa-plus"></i> Add task</button><br>
+     </div>
+   </div>
+        <br>
         <div class="card-columns" id="Card-List"> <!--List of Task-->
            
           </div>
@@ -77,7 +87,7 @@
  <div class="modal-dialog modal-dialog-centered" role="document">
    <div class="modal-content">
      <div class="modal-header">
-       <h5 class="modal-title" id="exampleModalLabel">ADD NEW TASK FOR THE PROJECT</h5>
+       <h5 class="modal-title" id="ModalTitle">Title</h5>
        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
          <span aria-hidden="true">&times;</span>
        </button>
@@ -90,12 +100,16 @@
                <input type="text" id="txtTaskName" class="form-control">
                <label for="txtTaskName">Task Name</label>
              </div>
-             <label class="text-danger" id="pJnameError"></label>
+             <div class="invalid-feedback" hidden>
+
+             </div>
              <div class="md-form" style="width:300px;">
                <input type="text" id="txtDetails" class="form-control">
                <label for="txtDetails">Details</label>
              </div>
-             <label class="text-danger" id="pJdetailsError"></label>
+             <div class="invalid-feedback">
+
+             </div>
            </div>
          </div>
        </div>

@@ -30,7 +30,7 @@ $(document).ready(function(){ //Initial Config
      }
      else if (ruta.endsWith("/ProjectTask.html")){
          VerifyIdentity();
-         TaskList();
+         GetProjectNames();
 
      }
      else if (ruta.endsWith("/UserData.html")){
@@ -63,7 +63,7 @@ function SaveNewProject(){
         //Get the current user:
         var user= $("#LoginUser").val();
         var Project= {
-            name: name.val(),
+            Name: name.val(),
             Details: Details.val(),
             Created: date.getDate()+ '/'+date.getMonth()+'/'+date.getFullYear(),
             Progress: 0.0,
@@ -103,7 +103,7 @@ btn.on('click',(event)=>{
     if (Validate(inputs)){
         //create the object for sent to firebase database
         var Project= { //Update only the nane and details of the project.
-            name: name.val(),
+            Name: name.val(),
             Details: Details.val(),
         };
         //save data to the database:
@@ -129,8 +129,9 @@ if (confirm("¿Estas seguro de eliminar este proyecto?")){
         alert("El Proyecto ha sido eliminado correctamente");
         Get_ProjectList();
     }).catch(function(error){
-        alert("Ha Ocurrido un error eliminado el proyecto");
+        alert("Ha Ocurrido un error eliminado el proyecto.");
         console.log(error);
+        
     })
 }
 }
@@ -149,14 +150,15 @@ function Get_ProjectList(){
                 //Add rows to the table:
                 var data= doc.data();
                 tableRows.append(`<tr>
-                <td>${data.name}</td>
+                <td>${data.Name}</td>
                 <td>${data.Details}</td>
                 <td>${data.Created}</td>
                 <td>${data.Progress}%</td>
                 <td>
                 <button class='btn btn-danger btn-sm' onclick="DeleteProject('${doc.id}')"><i class='fas fa-times-circle'></i></button>
-                <button class='btn btn-secondary btn-sm' onclick="EditProject('${doc.id}','${data.name}','${data.Details}')" 
+                <button class='btn btn-secondary btn-sm' onclick="EditProject('${doc.id}','${data.Name}','${data.Details}')" 
                 data-toggle="modal" data-target="#AddProjectMd"><i class='fas fa-edit'></i></button>
+                <button class='btn btn-info btn-sm' onclick="ViewProjectTask('${data.Name}')"><i class='fas fa-tasks'></i></button>
                 </td>
                 </tr>`)
             });
@@ -167,6 +169,15 @@ function Get_ProjectList(){
     }
 
  })
+}
+function ViewProjectTask(name){
+
+    if (name!= null){
+        if (confirm('¿Quieres ver la lista de tareas de este proyecto?')){
+            sessionStorage.setItem('ProjectName',name);
+            window.location.href= 'ProjectTask.html';
+        }
+    }
 }
 //#endregion
 
@@ -373,17 +384,128 @@ function ChangePassword(){
 //#region Task fuctions
 var AddTask= function(){
 
-}
-var deleteTask= function(){
+    var btn= $("#btnSaveTask");
+    $("#ModalTitle").text('ADD NEW TASK');
+    btn.off('click');
+    btn.on('click',(event)=>{
+        //Get the inputs references
+    var name= $("#txtTaskName");
+    var Details= $("#txtDetails");
+
+    var inputs= [name,Details];
+
+    if (Validate(inputs)){
+        //create the object for sent to firebase database
+        var date= new Date();
+        //Get the curret project
+        var CurrentProject= $("#ListProjectNames")
+        .find("option:selected").val();
+        //Get the current user:
+        var user= $("#LoginUser").val();
+        var Task= {
+            Name: name.val(),
+            Details: Details.val(),
+            Date: date.getDate()+ '/'+date.getMonth()+'/'+date.getFullYear(),
+            Progress: 0.0,
+            UserName: user,
+            Project: CurrentProject,
+            State: 'Working'
+        };
+        //save data to the database:
+        database.collection('Task').add(Task).then(function(){
+            //success message
+            alert(`La Tarea: ${name.val()} fue agregado correctamento al proyecto ${CurrentProject}`);
+            ClearInput(inputs);
+            TaskList(CurrentProject) //Update the task list:
+        }).catch(function(error){
+            alert("A Ocurrido un error al ingresar los datos");
+            console.log(error);
+        })
+    }
+    })
 
 }
-var EditTaskName= function(){
+var deleteTask= function(TaskID){
+
+    if (confirm("¿Esta seguro de eliminar esta tarea?")){
+        database.collection('Task').doc(TaskID).delete()
+        .then(function(){
+            alert("La Tarea ha sido eliminada correctamente");
+            //Get the selected Project:
+            var selectedProject= $("#ListProjectNames").find("option:selected").val();
+            TaskList(selectedProject);
+        }).catch((error)=>{
+            alert("Ha Ocurrido un error eliminado el la tarea seleccionada.");
+            console.log(error);
+        })
+    }
+}
+var EditTask= function(TaskID){
 
 }
-var TaskList= function(){
+var TaskList= function(Project){
+
+   var cardContent= $("#Card-List");
+   //User access
+   firebase.auth().onAuthStateChanged(function(user){
+       if (user!= null){
+           database.collection('Task').where('UserName','==',user.email)
+           .where('Project','==',Project).limit(10).get().then((ResultData)=>{
+
+            if (cardContent.find("div[class='card']").length>0){
+                //Clear the contend of the div.
+                cardContent.html('');
+            }
+            ResultData.forEach((docu)=>{
+                var data= docu.data();
+                cardContent.append(`<div class="card">
+                <div class="card-body">
+                <h5 class="card-title">${data.Name}</h5>
+                <p class="card-text">${data.Details}</p>
+                <a href="#" onclick="deleteTask("${docu.id}")"><i class="fas fa-times-circle"></i></a>
+                <a href="#" onclick="EditTask("${docu.id}")"><i class="fas fa-edit"></i></a>
+                </div>
+                <div class="card-footer">
+                <small class="text-muted">Created on: ${data.Date} by ${data.UserName}</small>
+                </div>
+                </div>`)
+            })
+           })
+       }
+   })
+  
 
 }
+var GetProjectNames= function(){
+     //Show the list of project (only the names) on the select input.
+    var SelectProject= $("#ListProjectNames");
+    var ProjectName= "";
 
+    firebase.auth().onAuthStateChanged((user)=>{
+        if (user!= null){
+            //Get the list of project Names:
+            database.collection('Project').where('UserName','==',user.email)
+            .limit(10).get().then(function(DataResult){
+                DataResult.forEach((doc)=>{
+                    ProjectName= doc.data().Name;
+                    SelectProject.append(`<option value="${ProjectName}">${ProjectName}</option>`);
+                    if (sessionStorage.getItem('ProjectName')== ProjectName){
+                        SelectProject.find(`option[value="${ProjectName}"]`)
+                        .attr('selected',true);
+                    }
+
+                })
+                TaskList(ProjectName);
+ 
+            })
+        }
+    })
+    //Add the change selection of the project:
+    SelectProject.change(()=>{
+        var selected= (this).find("option:selected").val(); //Selected Project
+        TaskList(selected);
+    })
+}
 //#region Home client functions:
 
 function MensajeDContacto(){
