@@ -61,7 +61,7 @@ function SaveNewProject(){
         //create the object for sent to firebase database
         var date= new Date();
         //Get the current user:
-        var user= $("#LoginUser").val();
+        var user= $("#LoginUser").text();
         var Project= {
             Name: name.val(),
             Details: Details.val(),
@@ -399,9 +399,9 @@ var AddTask= function(){
         var date= new Date();
         //Get the curret project
         var CurrentProject= $("#ListProjectNames")
-        .find("option:selected").val();
+        .children("option:selected").val();
         //Get the current user:
-        var user= $("#LoginUser").val();
+        var user= $("#LoginUser").text();
         var Task= {
             Name: name.val(),
             Details: Details.val(),
@@ -432,7 +432,7 @@ var deleteTask= function(TaskID){
         .then(function(){
             alert("La Tarea ha sido eliminada correctamente");
             //Get the selected Project:
-            var selectedProject= $("#ListProjectNames").find("option:selected").val();
+            var selectedProject= $("#ListProjectNames").children("option:selected").val();
             TaskList(selectedProject);
         }).catch((error)=>{
             alert("Ha Ocurrido un error eliminado el la tarea seleccionada.");
@@ -462,8 +462,8 @@ var TaskList= function(Project){
                 <div class="card-body">
                 <h5 class="card-title">${data.Name}</h5>
                 <p class="card-text">${data.Details}</p>
-                <a href="#" onclick="deleteTask("${docu.id}")"><i class="fas fa-times-circle"></i></a>
-                <a href="#" onclick="EditTask("${docu.id}")"><i class="fas fa-edit"></i></a>
+                <a onclick="deleteTask('${docu.id}')"><i class="fas fa-times-circle"></i></a>
+                <a onclick="EditTask('${docu.id}')"><i class="fas fa-edit"></i></a>
                 </div>
                 <div class="card-footer">
                 <small class="text-muted">Created on: ${data.Date} by ${data.UserName}</small>
@@ -492,18 +492,21 @@ var GetProjectNames= function(){
                     if (sessionStorage.getItem('ProjectName')== ProjectName){
                         SelectProject.find(`option[value="${ProjectName}"]`)
                         .attr('selected',true);
+                        $("#btnAddTask").attr("disabled",false);
                     }
 
                 })
-                TaskList(ProjectName);
+                TaskList(sessionStorage.getItem('ProjectName'));
  
             })
         }
     })
     //Add the change selection of the project:
     SelectProject.change(()=>{
-        var selected= (this).find("option:selected").val(); //Selected Project
+        var selected= $(SelectProject).children("option:selected").val();
+         //Selected Project
         TaskList(selected);
+        $("#btnAddTask").attr("disabled",false);
     })
 }
 //#region Home client functions:
