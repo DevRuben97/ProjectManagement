@@ -107,7 +107,7 @@ btn.on('click',(event)=>{
             Details: Details.val(),
         };
         //save data to the database:
-        database.collection('Project').doc(ProjectID).set(Project).then(function(){
+        database.collection('Project').doc(ProjectID).update(Project).then(function(){
             //success message
             alert(`El Proyecto: ${name} fue actualizado correctamente`);
             ClearInput(inputs);
@@ -440,8 +440,46 @@ var deleteTask= function(TaskID){
         })
     }
 }
-var EditTask= function(TaskID){
+var EditTask= function(TaskID,TaskName,TaskDetails){
 
+    var name= $("#txtTaskName");
+    var Details= $("#txtDetails");
+
+    //Set the data of the input
+    name.val(TaskName);
+    Details.val(TaskDetails);
+
+    var btn= $("#btnSaveTask");
+    $("#ModalTitle").text('EDIT TASK');
+    btn.off('click');
+    btn.on('click',(event)=>{
+     //Get the inputs references
+
+    var inputs= [name,Details];
+
+    if (Validate(inputs)){
+        //create the object for sent to firebase database
+
+        //Get the curret project
+        var CurrentProject= $("#ListProjectNames")
+        .children("option:selected").val();
+        var Task= {
+            Name: name.val(),
+            Details: Details.val(),
+            State: 'Working'
+        };
+        //save data to the database:
+        database.collection('Task').doc(TaskID).update(Task).then(function(){
+            //success message
+            alert(`La Tarea: ${name.val()} del proyecto ${CurrentProject} fue actualizado correctamente`);
+            ClearInput(inputs);
+            TaskList(CurrentProject) //Update the task list:
+        }).catch(function(error){
+            alert("A Ocurrido un error al ingresar los datos");
+            console.log(error);
+        })
+    }
+    })
 }
 var TaskList= function(Project){
 
@@ -463,7 +501,8 @@ var TaskList= function(Project){
                 <h5 class="card-title">${data.Name}</h5>
                 <p class="card-text">${data.Details}</p>
                 <a onclick="deleteTask('${docu.id}')"><i class="fas fa-times-circle"></i></a>
-                <a onclick="EditTask('${docu.id}')"><i class="fas fa-edit"></i></a>
+                <a onclick="EditTask('${docu.id}','${data.Name}','${data.Details}')" data-toggle="modal" data-target="#AddTask">
+                <i class="fas fa-edit"></i></a>
                 </div>
                 <div class="card-footer">
                 <small class="text-muted">Created on: ${data.Date} by ${data.UserName}</small>
